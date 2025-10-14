@@ -5,7 +5,6 @@
 
 #include "dmod.h"
 #include "fsi.h"
-#include <string.h>
 
 /**
  * @brief RamFS - Simple RAM-based File System
@@ -16,6 +15,38 @@
 
 #define RAMFS_MAX_FILENAME  64
 #define RAMFS_MAX_FILES     32
+
+// Helper functions to replace stdlib functions
+static int ramfs_strcmp(const char* s1, const char* s2)
+{
+    while (*s1 && (*s1 == *s2)) {
+        s1++;
+        s2++;
+    }
+    return *(unsigned char*)s1 - *(unsigned char*)s2;
+}
+
+static char* ramfs_strncpy(char* dest, const char* src, size_t n)
+{
+    size_t i;
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dest[i] = src[i];
+    }
+    for (; i < n; i++) {
+        dest[i] = '\0';
+    }
+    return dest;
+}
+
+static void* ramfs_memcpy(void* dest, const void* src, size_t n)
+{
+    unsigned char* d = (unsigned char*)dest;
+    const unsigned char* s = (const unsigned char*)src;
+    for (size_t i = 0; i < n; i++) {
+        d[i] = s[i];
+    }
+    return dest;
+}
 
 typedef struct RamFS_File {
     char name[RAMFS_MAX_FILENAME];
@@ -35,7 +66,7 @@ static RamFS_File_t* ramfs_find_file(const char* path)
 {
     RamFS_File_t* file = g_file_list;
     while (file != NULL) {
-        if (strcmp(file->name, path) == 0) {
+        if (ramfs_strcmp(file->name, path) == 0) {
             return file;
         }
         file = file->next;
@@ -112,7 +143,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fopen, (void** fp, const char* p
             return FSI_ERR_NO_SPACE;
         }
         
-        strncpy(file->name, path, RAMFS_MAX_FILENAME - 1);
+        ramfs_strncpy(file->name, path, RAMFS_MAX_FILENAME - 1);
         file->name[RAMFS_MAX_FILENAME - 1] = '\0';
         file->data = NULL;
         file->size = 0;
@@ -154,7 +185,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fread, (void* fp, void* buffer, 
     size_t to_read = (size < available) ? size : available;
     
     if (to_read > 0 && file->data != NULL) {
-        memcpy(buffer, file->data + file->position, to_read);
+        ramfs_memcpy(buffer, file->data + file->position, to_read);
         file->position += to_read;
     }
     
@@ -186,7 +217,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fwrite, (void* fp, const void* b
         }
         
         if (file->data != NULL) {
-            memcpy(new_data, file->data, file->size);
+            ramfs_memcpy(new_data, file->data, file->size);
             Dmod_Free(file->data);
         }
         
@@ -194,7 +225,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fwrite, (void* fp, const void* b
         file->capacity = new_capacity;
     }
     
-    memcpy(file->data + file->position, buffer, size);
+    ramfs_memcpy(file->data + file->position, buffer, size);
     file->position += size;
     if (file->position > file->size) {
         file->size = file->position;
@@ -340,7 +371,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _readdir, (void* dp, FSI_DirEntry
         return FSI_ERR_NOT_FOUND;
     }
     
-    strncpy(entry->name, file->name, sizeof(entry->name) - 1);
+    ramfs_strncpy(entry->name, file->name, sizeof(entry->name) - 1);
     entry->name[sizeof(entry->name) - 1] = '\0';
     entry->size = file->size;
     entry->attr = 0;
@@ -378,7 +409,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _unlink, (const char* path) )
     RamFS_File_t* prev = NULL;
     
     while (file != NULL) {
-        if (strcmp(file->name, path) == 0) {
+        if (ramfs_strcmp(file->name, path) == 0) {
             if (prev == NULL) {
                 g_file_list = file->next;
             } else {
@@ -413,7 +444,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _rename, (const char* oldpath, co
         return FSI_ERR_EXISTS;
     }
     
-    strncpy(file->name, newpath, RAMFS_MAX_FILENAME - 1);
+    ramfs_strncpy(file->name, newpath, RAMFS_MAX_FILENAME - 1);
     file->name[RAMFS_MAX_FILENAME - 1] = '\0';
     
     return FSI_OK;
