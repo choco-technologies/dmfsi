@@ -60,3 +60,6 @@ build/
 *.dmfc
 dmod-cache.mk
 dmod-cache-tmp.mk
+
+# DMOD generated files
+*_defs.h
