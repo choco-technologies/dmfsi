@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build-make:
+    name: Build with Make
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout dmod-fsi
+      uses: actions/checkout@v4
+      with:
+        path: dmod-fsi
+    
+    - name: Checkout DMOD
+      uses: actions/checkout@v4
+      with:
+        repository: JohnAmadis/dmod
+        ref: develop
+        path: dmod
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+    
+    - name: Build FSI module with Make
+      run: |
+        cd dmod-fsi
+        make DMOD_DIR=../dmod
+    
+    - name: Build RamFS example with Make
+      run: |
+        cd dmod-fsi/examples/ramfs
+        make DMOD_DIR=../../../dmod
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-make-artifacts
+        path: |
+          dmod/build/**/*.dmf
+        if-no-files-found: ignore
+
+  build-cmake:
+    name: Build with CMake
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout dmod-fsi
+      uses: actions/checkout@v4
+      with:
+        path: dmod-fsi
+    
+    - name: Checkout DMOD
+      uses: actions/checkout@v4
+      with:
+        repository: JohnAmadis/dmod
+        ref: develop
+        path: dmod
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+    
+    - name: Configure DMOD
+      run: |
+        cd dmod
+        mkdir -p build
+        cd build
+        cmake ..
+    
+    - name: Build DMOD
+      run: |
+        cd dmod/build
+        make -j$(nproc)
+    
+    - name: Configure dmod-fsi with CMake
+      run: |
+        cd dmod-fsi
+        mkdir -p build
+        cd build
+        cmake -DDMOD_DIR=$GITHUB_WORKSPACE/dmod ..
+    
+    - name: Build dmod-fsi with CMake
+      run: |
+        cd dmod-fsi/build
+        make -j$(nproc)
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-cmake-artifacts
+        path: |
+          dmod/build/**/*.dmf
+        if-no-files-found: ignore
