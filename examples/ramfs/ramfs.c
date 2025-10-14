@@ -48,14 +48,14 @@ static void* ramfs_memcpy(void* dest, const void* src, size_t n)
     return dest;
 }
 
-typedef struct ramfs_file {
+typedef struct Ramfs_File_s {
     char name[RAMFS_MAX_FILENAME];
     uint8_t* data;
     size_t size;
     size_t capacity;
     size_t position;
     int flags;
-    struct ramfs_file* next;
+    struct Ramfs_File_s* next;
 } Ramfs_File_t;
 
 static Ramfs_File_t* g_file_list = NULL;
