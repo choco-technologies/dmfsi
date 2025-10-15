@@ -53,7 +53,7 @@ typedef struct {
     uint32_t size;
     uint32_t attr;
     uint32_t time;
-} FSI_DirEntry_t;
+} fsi_dir_entry_t;
 
 /**
  * @brief File statistics structure
@@ -64,7 +64,7 @@ typedef struct {
     uint32_t ctime;
     uint32_t mtime;
     uint32_t atime;
-} FSI_Stat_t;
+} fsi_stat_t;
 
 // Define DIF signatures for file system operations
 // The _sig variables are automatically created by the dmod_fsi_dif macro
@@ -215,7 +215,7 @@ dmod_fsi_dif( 1.0, int, _closedir, (void* dp) );
  * @param entry Pointer to store the directory entry
  * @return FSI_OK on success, error code otherwise (FSI_ERR_NOT_FOUND at end)
  */
-dmod_fsi_dif( 1.0, int, _readdir, (void* dp, FSI_DirEntry_t* entry) );
+dmod_fsi_dif( 1.0, int, _readdir, (void* dp, fsi_dir_entry_t* entry) );
 
 /**
  * @brief Get file/directory statistics
@@ -223,7 +223,7 @@ dmod_fsi_dif( 1.0, int, _readdir, (void* dp, FSI_DirEntry_t* entry) );
  * @param stat Pointer to store the statistics
  * @return FSI_OK on success, error code otherwise
  */
-dmod_fsi_dif( 1.0, int, _stat, (const char* path, FSI_Stat_t* stat) );
+dmod_fsi_dif( 1.0, int, _stat, (const char* path, fsi_stat_t* stat) );
 
 /**
  * @brief Delete a file

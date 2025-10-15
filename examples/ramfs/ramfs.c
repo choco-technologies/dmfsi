@@ -48,23 +48,23 @@ static void* ramfs_memcpy(void* dest, const void* src, size_t n)
     return dest;
 }
 
-typedef struct Ramfs_File_s {
+typedef struct ramfs_file_s {
     char name[RAMFS_MAX_FILENAME];
     uint8_t* data;
     size_t size;
     size_t capacity;
     size_t position;
     int flags;
-    struct Ramfs_File_s* next;
-} Ramfs_File_t;
+    struct ramfs_file_s* next;
+} ramfs_file_t;
 
-static Ramfs_File_t* g_file_list = NULL;
+static ramfs_file_t* g_file_list = NULL;
 static int g_initialized = 0;
 
 // Helper function to find a file by name
-static Ramfs_File_t* ramfs_find_file(const char* path)
+static ramfs_file_t* ramfs_find_file(const char* path)
 {
-    Ramfs_File_t* file = g_file_list;
+    ramfs_file_t* file = g_file_list;
     while (file != NULL) {
         if (ramfs_strcmp(file->name, path) == 0) {
             return file;
@@ -96,9 +96,9 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _deinit, (void) )
     }
     
     // Free all files
-    Ramfs_File_t* file = g_file_list;
+    ramfs_file_t* file = g_file_list;
     while (file != NULL) {
-        Ramfs_File_t* next = file->next;
+        ramfs_file_t* next = file->next;
         if (file->data != NULL) {
             Dmod_Free(file->data);
         }
@@ -119,7 +119,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fopen, (void** fp, const char* p
         return FSI_ERR_GENERAL;
     }
     
-    Ramfs_File_t* file = ramfs_find_file(path);
+    ramfs_file_t* file = ramfs_find_file(path);
     
     // Check if file exists
     if (file != NULL) {
@@ -138,7 +138,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fopen, (void** fp, const char* p
         }
         
         // Create new file
-        file = (Ramfs_File_t*)Dmod_Malloc(sizeof(Ramfs_File_t));
+        file = (ramfs_file_t*)Dmod_Malloc(sizeof(ramfs_file_t));
         if (file == NULL) {
             return FSI_ERR_NO_SPACE;
         }
@@ -176,7 +176,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fclose, (void* fp) )
 // Implement _fread for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fread, (void* fp, void* buffer, size_t size, size_t* read) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL) {
         return FSI_ERR_INVALID;
     }
@@ -197,7 +197,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fread, (void* fp, void* buffer, 
 // Implement _fwrite for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fwrite, (void* fp, const void* buffer, size_t size, size_t* written) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL) {
         return FSI_ERR_INVALID;
     }
@@ -239,7 +239,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _fwrite, (void* fp, const void* b
 // Implement _lseek for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, long, _lseek, (void* fp, long offset, int whence) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL) {
         return FSI_ERR_INVALID;
     }
@@ -285,7 +285,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _sync, (void* fp) )
 // Implement _getc for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _getc, (void* fp) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL || file->position >= file->size) {
         return -1;
     }
@@ -307,7 +307,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _putc, (void* fp, int c) )
 // Implement _tell for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, long, _tell, (void* fp) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL) {
         return FSI_ERR_INVALID;
     }
@@ -317,7 +317,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, long, _tell, (void* fp) )
 // Implement _eof for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _eof, (void* fp) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL) {
         return FSI_ERR_INVALID;
     }
@@ -327,7 +327,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _eof, (void* fp) )
 // Implement _size for RamFS
 dmod_fsi_dif_api_declaration( 1.0, ramfs, long, _size, (void* fp) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)fp;
+    ramfs_file_t* file = (ramfs_file_t*)fp;
     if (file == NULL) {
         return FSI_ERR_INVALID;
     }
@@ -364,9 +364,9 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _closedir, (void* dp) )
 }
 
 // Implement _readdir for RamFS
-dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _readdir, (void* dp, FSI_DirEntry_t* entry) )
+dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _readdir, (void* dp, fsi_dir_entry_t* entry) )
 {
-    Ramfs_File_t* file = (Ramfs_File_t*)dp;
+    ramfs_file_t* file = (ramfs_file_t*)dp;
     if (file == NULL) {
         return FSI_ERR_NOT_FOUND;
     }
@@ -383,9 +383,9 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _readdir, (void* dp, FSI_DirEntry
 }
 
 // Implement _stat for RamFS
-dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _stat, (const char* path, FSI_Stat_t* stat) )
+dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _stat, (const char* path, fsi_stat_t* stat) )
 {
-    Ramfs_File_t* file = ramfs_find_file(path);
+    ramfs_file_t* file = ramfs_find_file(path);
     if (file == NULL) {
         return FSI_ERR_NOT_FOUND;
     }
@@ -405,8 +405,8 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _unlink, (const char* path) )
 {
     Dmod_Printf("RamFS: unlink '%s'\n", path);
     
-    Ramfs_File_t* file = g_file_list;
-    Ramfs_File_t* prev = NULL;
+    ramfs_file_t* file = g_file_list;
+    ramfs_file_t* prev = NULL;
     
     while (file != NULL) {
         if (ramfs_strcmp(file->name, path) == 0) {
@@ -434,7 +434,7 @@ dmod_fsi_dif_api_declaration( 1.0, ramfs, int, _rename, (const char* oldpath, co
 {
     Dmod_Printf("RamFS: rename '%s' to '%s'\n", oldpath, newpath);
     
-    Ramfs_File_t* file = ramfs_find_file(oldpath);
+    ramfs_file_t* file = ramfs_find_file(oldpath);
     if (file == NULL) {
         return FSI_ERR_NOT_FOUND;
     }
