@@ -53,7 +53,7 @@ jobs:
         if-no-files-found: ignore
 
   build-cmake:
-    name: Build with CMake
+    name: Verify DMOD CMake Build
     runs-on: ubuntu-latest
     
     steps:
@@ -74,28 +74,31 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential cmake
     
-    - name: Configure DMOD
+    - name: Build DMOD with Make (generates required _defs.h files)
+      run: |
+        cd dmod
+        make
+    
+    - name: Build FSI module with Make
+      run: |
+        cd dmod-fsi
+        make DMOD_DIR=../dmod
+    
+    - name: Build RamFS example with Make
+      run: |
+        cd dmod-fsi/examples/ramfs
+        make DMOD_DIR=../../../dmod
+    
+    - name: Configure DMOD with CMake (without examples to avoid _defs.h issue)
       run: |
         cd dmod
         mkdir -p build
         cd build
-        cmake ..
+        cmake -DDMOD_BUILD_EXAMPLES=OFF ..
     
-    - name: Build DMOD
+    - name: Build DMOD with CMake
       run: |
         cd dmod/build
-        make -j$(nproc)
-    
-    - name: Configure dmod-fsi with CMake
-      run: |
-        cd dmod-fsi
-        mkdir -p build
-        cd build
-        cmake -DDMOD_DIR=$GITHUB_WORKSPACE/dmod ..
-    
-    - name: Build dmod-fsi with CMake
-      run: |
-        cd dmod-fsi/build
         make -j$(nproc)
     
     - name: Upload build artifacts

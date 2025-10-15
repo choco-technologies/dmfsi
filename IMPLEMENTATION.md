@@ -64,19 +64,18 @@ Key features:
 - Uses DMOD's dmf-lib.mk for module creation
 - Configurable DMOD_DIR parameter
 
-**CMake Support**: `CMakeLists.txt`, `examples/ramfs/CMakeLists.txt`
-- Modern CMake 3.18+ support
-- Uses dmod_add_library function
-- Proper include directory handling
+DMOD modules must be built using Make with the DMOD build system. CMake is not supported for building modules outside DMOD's build tree.
 
 ### 4. CI/CD
 **Location**: `.github/workflows/ci.yml`
 
 GitHub Actions workflow with:
-- Build with Make job
-- Build with CMake job
+- Build with Make job (builds dmod-fsi modules)
+- Verify DMOD CMake Build job (verifies DMOD can be built with CMake)
 - Automatic DMOD checkout and build
 - Artifact upload for DMF files
+
+Note: DMOD modules (including dmod-fsi) are built using Make, as CMake is not supported for external DMOD modules.
 
 ### 5. Documentation
 **Location**: `README.md`

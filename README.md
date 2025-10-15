@@ -22,16 +22,23 @@ The interface includes:
 ### Prerequisites
 
 - DMOD library (https://github.com/JohnAmadis/dmod)
-- CMake 3.18+ or GNU Make
+- GNU Make
 - GCC or compatible C compiler
 
 ### Build with Make
 
+DMOD modules must be built using the DMOD build system with Make:
+
 ```bash
+# First, build DMOD
+cd /path/to/dmod
+make
+
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
 # Build the FSI interface module
+cd /path/to/dmod-fsi
 make
 
 # Build the RamFS example
@@ -39,15 +46,9 @@ cd examples/ramfs
 make
 ```
 
-### Build with CMake
+The build process will generate DMF (DMOD Module Format) files that can be dynamically loaded by DMOD.
 
-```bash
-# Set DMOD_DIR to point to your DMOD installation
-mkdir build
-cd build
-cmake -DDMOD_DIR=/path/to/dmod ..
-make
-```
+**Note**: CMake is not supported for building DMOD modules outside the DMOD build tree. Use Make with the DMOD build system.
 
 ## Interface Definition
 
