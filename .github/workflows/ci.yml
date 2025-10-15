@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build-make:
+    name: Build with Make
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout dmod-fsi
+      uses: actions/checkout@v4
+      with:
+        path: dmod-fsi
+    
+    - name: Checkout DMOD
+      uses: actions/checkout@v4
+      with:
+        repository: JohnAmadis/dmod
+        ref: develop
+        path: dmod
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+    
+    - name: Build DMOD system
+      run: |
+        cd dmod
+        make
+    
+    - name: Build FSI module with Make
+      run: |
+        cd dmod-fsi
+        make DMOD_DIR=../dmod
+    
+    - name: Build RamFS example with Make
+      run: |
+        cd dmod-fsi/examples/ramfs
+        make DMOD_DIR=../../../dmod
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-make-artifacts
+        path: |
+          dmod/build/**/*.dmf
+        if-no-files-found: ignore
+
+  build-cmake:
+    name: Verify DMOD CMake Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout dmod-fsi
+      uses: actions/checkout@v4
+      with:
+        path: dmod-fsi
+    
+    - name: Checkout DMOD
+      uses: actions/checkout@v4
+      with:
+        repository: JohnAmadis/dmod
+        ref: develop
+        path: dmod
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+    
+    - name: Build DMOD with Make (generates required _defs.h files)
+      run: |
+        cd dmod
+        make
+    
+    - name: Build FSI module with Make
+      run: |
+        cd dmod-fsi
+        make DMOD_DIR=../dmod
+    
+    - name: Build RamFS example with Make
+      run: |
+        cd dmod-fsi/examples/ramfs
+        make DMOD_DIR=../../../dmod
+    
+    - name: Configure DMOD with CMake (without examples to avoid _defs.h issue)
+      run: |
+        cd dmod
+        mkdir -p build
+        cd build
+        cmake -DDMOD_BUILD_EXAMPLES=OFF ..
+    
+    - name: Build DMOD with CMake
+      run: |
+        cd dmod/build
+        make -j$(nproc)
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-cmake-artifacts
+        path: |
+          dmod/build/**/*.dmf
+        if-no-files-found: ignore
