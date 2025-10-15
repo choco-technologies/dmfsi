@@ -48,7 +48,7 @@ make
 
 The build process will generate DMF (DMOD Module Format) files that can be dynamically loaded by DMOD.
 
-**Note**: CMake is not supported for building DMOD modules outside the DMOD build tree. Use Make with the DMOD build system.
+**Note**: This module was structured following DMOD's module conventions. To create new DMOD modules, use the `new-module.sh` script from the DMOD repository (available in `scripts/new-module.sh` on the develop branch).
 
 ## Interface Definition
 
