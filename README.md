@@ -21,7 +21,7 @@ The interface includes:
 
 ### Prerequisites
 
-- DMOD library (https://github.com/choco-technologies/dmod)
+- DMOD library (https://github.com/choco-technologies/dmod.git)
 - GNU Make or CMake (version 3.18 or higher)
 - GCC or compatible C compiler
 
