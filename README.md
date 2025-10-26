@@ -27,21 +27,46 @@ The interface includes:
 
 ### Build with CMake
 
-DMOD modules can be built using CMake:
+DMOD modules can be built using CMake in two modes:
+
+#### DMOD_MODULE Mode (Default)
+
+In this mode, modules are built as dynamically loadable DMF (DMOD Module Format) files:
 
 ```bash
-# First, build DMOD with CMake
+# First, build DMOD
 cd /path/to/dmod
-cmake -B build -DDMOD_MODE=DMOD_SYSTEM
-cmake --build build
+make
 
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface module with examples
+# Build the FSI interface module with examples (DMOD_MODULE is the default)
 cd /path/to/dmod-fsi
 cmake -B build -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
+
+# DMF files will be created in build/dmf/
+```
+
+#### DMOD_SYSTEM Mode
+
+In this mode, modules are built as static libraries that can be linked into a DMOD system application:
+
+```bash
+# First, build DMOD
+cd /path/to/dmod
+make
+
+# Set DMOD_DIR to point to your DMOD installation
+export DMOD_DIR=/path/to/dmod
+
+# Build the FSI interface as a static library
+cd /path/to/dmod-fsi
+cmake -B build -DDMOD_MODE=DMOD_SYSTEM -DDMOD_BUILD_EXAMPLES=ON
+cmake --build build
+
+# Static libraries (.a files) will be created in build/
 ```
 
 ### Build with Make
