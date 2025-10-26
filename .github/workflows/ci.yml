@@ -20,7 +20,7 @@ jobs:
     - name: Checkout DMOD
       uses: actions/checkout@v4
       with:
-        repository: JohnAmadis/dmod
+        repository: choco-technologies/dmod
         ref: develop
         path: dmod
     
@@ -65,7 +65,7 @@ jobs:
     - name: Checkout DMOD
       uses: actions/checkout@v4
       with:
-        repository: JohnAmadis/dmod
+        repository: choco-technologies/dmod
         ref: develop
         path: dmod
     
