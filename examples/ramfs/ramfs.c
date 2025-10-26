@@ -123,8 +123,8 @@ dmod_dmfsi_dif_api_declaration( 1.0, ramfs, int, _deinit, (dmfsi_context_t ctx) 
         file = next;
     }
     
-    // Clear magic and free context
-    ctx->magic = 0;
+    // Clear magic to detect use-after-free and free context
+    ctx->magic = 0xDEADBEEF;
     Dmod_Free(ctx);
     
     return DMFSI_OK;
