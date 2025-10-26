@@ -41,7 +41,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface module with examples (DMOD_MODULE is the default)
+# Build the DMFSI interface module with examples (DMOD_MODULE is the default)
 cd /path/to/dmod-fsi
 cmake -B build -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
@@ -61,7 +61,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface as a static library
+# Build the DMFSI interface as a static library
 cd /path/to/dmod-fsi
 cmake -B build -DDMOD_MODE=DMOD_SYSTEM -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
@@ -81,7 +81,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface module
+# Build the DMFSI interface module
 cd /path/to/dmod-fsi
 make
 
