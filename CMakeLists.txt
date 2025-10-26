@@ -20,13 +20,13 @@ set(DMOD_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(${DMOD_DIR}/paths.cmake)
 
-project(dmod_fsi)
+project(dmod_dmfsi)
 
 dmod_setup_external_module()
 
-set(DMOD_MODULE_NAME fsi)
+set(DMOD_MODULE_NAME dmfsi)
 set(DMOD_MODULE_VERSION "1.0")
-set(DMOD_AUTHOR_NAME "DMOD FSI Team")
+set(DMOD_AUTHOR_NAME "DMOD DMFSI Team")
 set(DMOD_STACK_SIZE 1024)
 set(DMOD_PRIORITY 1)
 set(DMOD_MANUAL_LOAD OFF)
@@ -34,7 +34,7 @@ set(DMOD_MANUAL_LOAD OFF)
 if(DMOD_SYSTEM)
     # In DMOD_SYSTEM mode, build as a regular static library
     add_library(${DMOD_MODULE_NAME} STATIC
-        src/fsi.c
+        src/dmfsi.c
     )
     
     # Create interface library for consistency with MODULE mode
@@ -63,7 +63,7 @@ if(DMOD_SYSTEM)
 else()
     # In DMOD_MODULE mode, build as a DMF module using dmod_add_library
     dmod_add_library(${DMOD_MODULE_NAME} ${DMOD_MODULE_VERSION}
-        src/fsi.c
+        src/dmfsi.c
     )
     
     # Make the interface available to other modules

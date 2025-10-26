@@ -1,6 +1,6 @@
 # #############################################################################
 # 
-# 	FSI - File System Interface for DMOD
+# 	DMFSI - DMOD File System Interface
 # 	This module defines file system interface that can be implemented by 
 # 	multiple modules (e.g., FatFS, RamFS, FlashFS)
 #
@@ -21,16 +21,16 @@ include $(DMOD_DIR)/paths.mk
 # -----------------------------------------------------------------------------
 
 # The name of the module
-DMOD_MODULE_NAME=fsi
+DMOD_MODULE_NAME=dmfsi
 
 # The version of the module
 DMOD_MODULE_VERSION=1.0
 
 # The name of the author
-DMOD_AUTHOR_NAME=DMOD FSI Team
+DMOD_AUTHOR_NAME=DMOD DMFSI Team
 
 # The list of C sources
-DMOD_CSOURCES=src/fsi.c
+DMOD_CSOURCES=src/dmfsi.c
 
 # The list of C++ sources
 DMOD_CXXSOURCES=

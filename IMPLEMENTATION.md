@@ -1,12 +1,12 @@
 # Implementation Summary
 
 ## Overview
-Successfully implemented a complete File System Interface (FSI) for DMOD as requested in the issue.
+Successfully implemented a complete File System Interface (DMFSI) for DMOD as requested in the issue.
 
 ## What Was Implemented
 
-### 1. FSI Interface Module
-**Location**: `inc/fsi.h`, `inc/fsi_defs.h`, `src/fsi.c`
+### 1. DMFSI Interface Module
+**Location**: `inc/dmfsi.h`, `inc/dmfsi_defs.h`, `src/dmfsi.c`
 
 Defines 27 DIF (DMOD Interface) operations for file systems:
 
@@ -45,7 +45,7 @@ Defines 27 DIF (DMOD Interface) operations for file systems:
 ### 2. RamFS Example Implementation
 **Location**: `examples/ramfs/ramfs.c`
 
-A complete working implementation of the FSI interface demonstrating:
+A complete working implementation of the DMFSI interface demonstrating:
 - RAM-based file storage
 - Dynamic memory allocation
 - File operations (create, read, write, seek)
@@ -53,7 +53,7 @@ A complete working implementation of the FSI interface demonstrating:
 - All 27 DIF operations implemented
 
 Key features:
-- Implements all FSI operations
+- Implements all DMFSI operations
 - Uses DMOD APIs (Dmod_Malloc, Dmod_Free, Dmod_Printf)
 - No stdlib dependencies (custom strcmp, strncpy, memcpy)
 - Builds as a standalone DMF module
@@ -70,12 +70,12 @@ DMOD modules must be built using Make with the DMOD build system. CMake is not s
 **Location**: `.github/workflows/ci.yml`
 
 GitHub Actions workflow with:
-- Build with Make job (builds dmod-fsi modules)
+- Build with Make job (builds DMFSI modules)
 - Verify DMOD CMake Build job (verifies DMOD can be built with CMake)
 - Automatic DMOD checkout and build
 - Artifact upload for DMF files
 
-Note: DMOD modules (including dmod-fsi) are built using Make, as CMake is not supported for external DMOD modules.
+Note: DMOD modules (including DMFSI) are built using Make, as CMake is not supported for external DMOD modules.
 
 ### 5. Documentation
 **Location**: `README.md`
@@ -92,14 +92,14 @@ Comprehensive documentation including:
 
 Both modules build successfully:
 ```
-/tmp/dmod/build/dmf/fsi.dmf     (544 bytes)
+/tmp/dmod/build/dmf/dmfsi.dmf     (544 bytes)
 /tmp/dmod/build/dmf/ramfs.dmf   (5.1 KB)
 ```
 
 ## Coding Style
 
 Follows DMOD coding conventions:
-- Uses DMOD API macros (dmod_fsi_dif, dmod_fsi_dif_api_declaration)
+- Uses DMOD API macros (dmod_dmfsi_dif, dmod_dmfsi_dif_api_declaration)
 - Module registration with dmod_init/dmod_deinit
 - DMOD_ENABLE_REGISTRATION for DIF signatures
 - No direct stdlib usage in modules (uses DMOD SAL)
@@ -124,7 +124,7 @@ The interface is designed to be compatible with:
 ## Testing
 
 Manual build testing completed:
-- ✅ FSI interface module builds successfully
+- ✅ DMFSI interface module builds successfully
 - ✅ RamFS example module builds successfully  
 - ✅ No compilation errors or warnings
 - ✅ DMF files created correctly

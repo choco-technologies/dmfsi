@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.18)
 
 set(DMOD_MODULE_NAME ramfs)
 set(DMOD_MODULE_VERSION "1.0")
-set(DMOD_AUTHOR_NAME "DMOD FSI Team")
+set(DMOD_AUTHOR_NAME "DMOD DMFSI Team")
 set(DMOD_STACK_SIZE 1024)
 set(DMOD_PRIORITY 1)
 set(DMOD_MANUAL_LOAD OFF)
 
-# Declare that this module implements the FSI interface
-set(DMOD_DIF_IMPLS fsi)
+# Declare that this module implements the DMFSI interface
+set(DMOD_DIF_IMPLS dmfsi)
 
 if(DMOD_SYSTEM)
     # In DMOD_SYSTEM mode, build as a regular static library
@@ -31,7 +31,7 @@ if(DMOD_SYSTEM)
             ${CMAKE_CURRENT_BINARY_DIR}
     )
     
-    target_link_libraries(${DMOD_MODULE_NAME} PUBLIC dmod fsi_if)
+    target_link_libraries(${DMOD_MODULE_NAME} PUBLIC dmod dmfsi_if)
     target_link_libraries(${DMOD_MODULE_NAME}_if INTERFACE ${DMOD_MODULE_NAME})
     
     # Generate the _defs.h file for interface definitions
@@ -53,6 +53,6 @@ else()
         ramfs.c
     )
     
-    # Link to FSI interface
-    target_link_libraries(${DMOD_MODULE_NAME} fsi_if)
+    # Link to DMFSI interface
+    target_link_libraries(${DMOD_MODULE_NAME} dmfsi_if)
 endif()
