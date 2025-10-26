@@ -34,7 +34,7 @@ jobs:
         cd dmod
         make
     
-    - name: Build FSI module with Make
+    - name: Build DMFSI module with Make
       run: |
         cd dmod-fsi
         make DMOD_DIR=../dmod
@@ -79,7 +79,7 @@ jobs:
         cd dmod
         make
     
-    - name: Build FSI module with Make
+    - name: Build DMFSI module with Make
       run: |
         cd dmod-fsi
         make DMOD_DIR=../dmod

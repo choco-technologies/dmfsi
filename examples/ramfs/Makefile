@@ -1,7 +1,7 @@
 # #############################################################################
 # 
 # 	RamFS - Simple RAM-based File System
-# 	Example implementation of FSI interface
+# 	Example implementation of DMFSI interface
 #
 # #############################################################################
 
@@ -10,8 +10,8 @@ ifndef DMOD_DIR
 $(error DMOD_DIR is not set. Please set it to the path of the DMOD repository)
 endif
 
-# Path to FSI module
-FSI_DIR=../..
+# Path to DMFSI module
+DMFSI_DIR=../..
 
 # -----------------------------------------------------------------------------
 #  Paths initialization
@@ -29,7 +29,7 @@ DMOD_MODULE_NAME=ramfs
 DMOD_MODULE_VERSION=1.0
 
 # The name of the author
-DMOD_AUTHOR_NAME=DMOD FSI Team
+DMOD_AUTHOR_NAME=DMOD DMFSI Team
 
 # The list of C sources
 DMOD_CSOURCES=ramfs.c
@@ -38,7 +38,7 @@ DMOD_CSOURCES=ramfs.c
 DMOD_CXXSOURCES=
 
 # The list of include directories
-DMOD_INC_DIRS=$(FSI_DIR)/inc
+DMOD_INC_DIRS=$(DMFSI_DIR)/inc
 
 # The list of libraries to link
 DMOD_LIBS=
@@ -54,7 +54,7 @@ DMOD_MAL_IMPLS=
 # -----------------------------------------------------------------------------
 #   List of DIF interfaces implemented by the module
 # -----------------------------------------------------------------------------
-DMOD_DIF_IMPLS=fsi
+DMOD_DIF_IMPLS=dmfsi
 
 # -----------------------------------------------------------------------------
 #   Include the dmod lib makefile

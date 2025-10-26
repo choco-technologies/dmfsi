@@ -1,10 +1,10 @@
-# dmod-fsi - File System Interface for DMOD
+# DMFSI - DMOD File System Interface
 
 This repository defines a DMOD Interface (DIF) for file systems. It provides a standardized interface that can be implemented by various file system modules (e.g., FatFS, RamFS, FlashFS) to enable virtual file system (VFS) mounting in DMOD-based systems.
 
 ## Overview
 
-The FSI (File System Interface) defines a comprehensive set of file system operations based on POSIX-like semantics. This interface allows different file system implementations to be used interchangeably through the DMOD dynamic module system.
+The DMFSI (DMOD File System Interface) defines a comprehensive set of file system operations based on POSIX-like semantics. This interface allows different file system implementations to be used interchangeably through the DMOD dynamic module system.
 
 ## Features
 
@@ -41,7 +41,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface module with examples (DMOD_MODULE is the default)
+# Build the DMFSI interface module with examples (DMOD_MODULE is the default)
 cd /path/to/dmod-fsi
 cmake -B build -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
@@ -61,7 +61,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface as a static library
+# Build the DMFSI interface as a static library
 cd /path/to/dmod-fsi
 cmake -B build -DDMOD_MODE=DMOD_SYSTEM -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
@@ -81,7 +81,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the FSI interface module
+# Build the DMFSI interface module
 cd /path/to/dmod-fsi
 make
 
@@ -96,19 +96,19 @@ The build process will generate DMF (DMOD Module Format) files that can be dynam
 
 ## Interface Definition
 
-The interface is defined in `inc/fsi.h`. All operations return integer status codes (FSI_OK on success, negative error codes on failure).
+The interface is defined in `inc/dmfsi.h`. All operations return integer status codes (DMFSI_OK on success, negative error codes on failure).
 
 ### Example Implementation
 
-The `examples/ramfs` directory contains a simple RAM-based file system implementation demonstrating how to implement the FSI interface. This serves as a reference for creating new file system modules.
+The `examples/ramfs` directory contains a simple RAM-based file system implementation demonstrating how to implement the DMFSI interface. This serves as a reference for creating new file system modules.
 
 ## Usage
 
 To implement a new file system:
 
 1. Create a new module directory
-2. Include `fsi.h` in your implementation
-3. Implement the DIF functions using `dmod_fsi_dif_api_declaration` macro
+2. Include `dmfsi.h` in your implementation
+3. Implement the DIF functions using `dmod_dmfsi_dif_api_declaration` macro
 4. Create Makefile and CMakeLists.txt based on the examples
 5. Build your module as a DMOD DMF file
 
@@ -117,10 +117,10 @@ To implement a new file system:
 ```
 dmod-fsi/
 ├── inc/
-│   ├── fsi.h           # Main interface definition
-│   └── fsi_defs.h      # DMOD-generated definitions
+│   ├── dmfsi.h         # Main interface definition
+│   └── dmfsi_defs.h    # DMOD-generated definitions
 ├── src/
-│   └── fsi.c           # Interface registration
+│   └── dmfsi.c         # Interface registration
 ├── examples/
 │   ├── ramfs/          # Example RAM file system implementation
 │   │   ├── ramfs.c
