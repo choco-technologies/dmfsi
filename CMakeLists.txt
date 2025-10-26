@@ -20,7 +20,7 @@ set(DMOD_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(${DMOD_DIR}/paths.cmake)
 
-project(dmod_dmfsi)
+project(dmfsi)
 
 dmod_setup_external_module()
 
