@@ -6,6 +6,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 /**
  * @brief DMFSI - DMOD File System Interface
@@ -73,6 +74,95 @@ typedef struct {
     uint32_t mtime;
     uint32_t atime;
 } dmfsi_stat_t;
+
+/**
+ * @brief Path structure for parsing
+ */
+typedef struct dmfsi_path
+{
+    char* directory;            //!< Directory part
+    char* filename;             //!< Filename part
+    struct dmfsi_path* next;    //!< Next path in linked list
+} dmfsi_path_t;
+
+/**
+ * @brief Duplicate a string using DMOD memory allocation
+ * @param str Input string
+ * @param n Maximum number of characters to duplicate
+ * @return Duplicated string, or NULL on failure
+ */
+static inline char* dmfsi_strndup(const char* str, size_t n)
+{
+    char* copy = Dmod_Malloc(n + 1);
+    if(copy)
+    {        
+        strncpy(copy, str, n);
+        copy[n] = '\0';
+    }
+    return copy;
+}
+
+/**
+ * @brief create a dmfsi_path_t from a path string
+ * @param path Input path string
+ * @return Pointer to dmfsi_path_t structure, or NULL on failure
+ */
+static inline dmfsi_path_t* dmfsi_path_create(const char* path)
+{
+    if(path == NULL || *path == '\0' || strcmp(path, "/") == 0)
+    {
+        return NULL;
+    }
+
+    dmfsi_path_t* p = Dmod_Malloc(sizeof(dmfsi_path_t));
+    if(p == NULL)
+    {
+        DMOD_LOG_ERROR("Failed to allocate memory for dmfsi_path_t");
+        return NULL;
+    }
+
+    char* slash = strchr(path, '/');
+    p->filename = NULL;
+    p->directory = NULL;
+    p->next = NULL;
+
+    if(slash == NULL)
+    {
+        p->filename = dmfsi_strndup(path, strlen(path));
+    }
+    else 
+    {
+        size_t dir_len = slash - path;
+        p->directory = dmfsi_strndup(path, dir_len);
+        p->next = dmfsi_path_create(slash + 1);
+    }
+
+    return p;
+}
+
+/**
+ * @brief Free a dmfsi_path_t structure
+ * @param path Pointer to dmfsi_path_t structure
+ */
+static inline void dmfsi_path_free(dmfsi_path_t* path)
+{
+    if(path)
+    {
+        if(path->directory)
+        {
+            Dmod_Free(path->directory);
+        }
+        if(path->filename)
+        {
+            Dmod_Free(path->filename);
+        }
+        if(path->next)
+        {
+            dmfsi_path_free(path->next);
+        }
+        Dmod_Free(path);
+    }
+}
 
 // Define DIF signatures for file system operations
 // The _sig variables are automatically created by the dmod_dmfsi_dif macro
