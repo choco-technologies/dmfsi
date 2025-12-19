@@ -3,6 +3,10 @@ name: Release
 on:
   release:
     types: [created]
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
 
 jobs:
   build-dmfsi:
@@ -21,9 +25,13 @@ jobs:
       - name: Extract version from tag
         id: get_version
         run: |
-          # Extract version from tag (e.g., v1.2 -> 1.2)
-          VERSION="${{ github.event.release.tag_name }}"
-          VERSION="${VERSION#v}"  # Remove 'v' prefix if present
+          # Extract version from tag (e.g., v1.2 -> 1.2) or use dev for non-release builds
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"  # Remove 'v' prefix if present
+          else
+            VERSION="dev"
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Extracted version: $VERSION"
       
@@ -43,6 +51,7 @@ jobs:
           ls -la dmfc/ || echo "No dmfc directory"
       
       - name: Prepare DMFSI release package
+        if: github.event_name == 'release'
         run: |
           set -e
           mkdir -p release_package
@@ -78,10 +87,9 @@ jobs:
           # Copy DMR resource file
           cp dmfsi.dmr release_package/
           
-          # Copy README, LICENSE, and IMPLEMENTATION
+          # Copy README and LICENSE
           cp README.md release_package/
           cp LICENSE release_package/
-          cp IMPLEMENTATION.md release_package/
           
           # Create release notes file from GitHub release
           echo "${{ github.event.release.body }}" > release_package/RELEASE_NOTES.txt
@@ -90,6 +98,7 @@ jobs:
           ls -la release_package/
       
       - name: Create DMFSI release archive
+        if: github.event_name == 'release'
         run: |
           cd release_package
           zip -r ../dmfsi-${{ github.event.release.tag_name }}.zip .
@@ -98,101 +107,26 @@ jobs:
           ls -lh dmfsi-*.zip
       
       - name: Upload DMFSI artifact
+        if: github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
           name: release-dmfsi
           path: dmfsi-${{ github.event.release.tag_name }}.zip
           retention-days: 1
-
-  build-ramfs:
-    name: Build RamFS Example
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
-    container:
-      image: chocotechnologies/dmod:1.0.4
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
       
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          VERSION="${{ github.event.release.tag_name }}"
-          VERSION="${VERSION#v}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Extracted version: $VERSION"
-      
-      - name: Build DMFSI and RamFS
-        run: |
-          set -e
-          mkdir -p build
-          cd build
-          
-          cmake .. \
-            -DDMOD_MODULE_VERSION="${{ steps.get_version.outputs.version }}"
-          
-          cmake --build .
-          
-          echo "Build completed"
-          ls -la dmf/ || echo "No dmf directory"
-      
-      - name: Prepare RamFS release package
-        run: |
-          set -e
-          mkdir -p release_package_ramfs
-          BUILD_DIR=build
-          DMF_DIR="$BUILD_DIR/dmf"
-          DMFC_DIR="$BUILD_DIR/dmfc"
-          
-          # Copy RamFS DMF file
-          cp "$DMF_DIR/ramfs.dmf" release_package_ramfs/
-          cp "$DMF_DIR/ramfs_version.txt" release_package_ramfs/
-          
-          # Copy DMFC if exists
-          if [ -f "$DMFC_DIR/ramfs.dmfc" ]; then
-            cp "$DMFC_DIR/ramfs.dmfc" release_package_ramfs/
-          fi
-          
-          # Copy DMD if exists
-          if [ -f "$DMF_DIR/ramfs.dmd" ]; then
-            cp "$DMF_DIR/ramfs.dmd" release_package_ramfs/
-          fi
-          
-          # Copy source and build files
-          mkdir -p release_package_ramfs/src
-          cp examples/ramfs/ramfs.c release_package_ramfs/src/
-          cp examples/ramfs/Makefile release_package_ramfs/
-          cp examples/ramfs/CMakeLists.txt release_package_ramfs/
-          
-          # Copy DMR resource file
-          cp examples/ramfs/ramfs.dmr release_package_ramfs/
-          
-          # Copy README
-          cp examples/ramfs/README.md release_package_ramfs/
-          
-          echo "Package contents:"
-          ls -la release_package_ramfs/
-      
-      - name: Create RamFS release archive
-        run: |
-          cd release_package_ramfs
-          zip -r ../ramfs-${{ github.event.release.tag_name }}.zip .
-          cd ..
-          echo "Created archive:"
-          ls -lh ramfs-*.zip
-      
-      - name: Upload RamFS artifact
+      - name: Upload build artifacts (non-release)
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: release-ramfs
-          path: ramfs-${{ github.event.release.tag_name }}.zip
-          retention-days: 1
+          name: build-artifacts
+          path: |
+            build/dmf/**/*.dmf
+            build/dmfc/**/*.dmfc
+          if-no-files-found: ignore
 
   generate-versions-manifest:
     name: Generate versions.dmm
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -224,9 +158,8 @@ jobs:
           
           echo "Found versions: $VERSIONS"
           
-          # Add $version-available directives for the modules
+          # Add $version-available directive for dmfsi
           echo "\$version-available dmfsi $VERSIONS" >> versions.dmm
-          echo "\$version-available ramfs $VERSIONS" >> versions.dmm
           
           echo "Generated versions.dmm:"
           cat versions.dmm
@@ -240,7 +173,8 @@ jobs:
 
   upload-release-assets:
     name: Upload Release Assets
-    needs: [build-dmfsi, build-ramfs, generate-versions-manifest]
+    if: github.event_name == 'release'
+    needs: [build-dmfsi, generate-versions-manifest]
     runs-on: ubuntu-latest
     permissions:
       contents: write

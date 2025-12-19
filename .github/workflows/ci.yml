@@ -94,7 +94,7 @@ jobs:
         cd dmod
         mkdir -p build
         cd build
-        cmake -DDMOD_BUILD_EXAMPLES=OFF -DDMOD_BUILD_TOOLS=OFF ..
+        cmake -DDMOD_BUILD_EXAMPLES=OFF -DDMOD_BUILD_TOOLS=ON ..
     
     - name: Build DMOD with CMake
       run: |

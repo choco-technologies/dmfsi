@@ -18,9 +18,6 @@ docs=./docs => ${destination}/${module}/docs
 # README file
 readme=./README.md => ${destination}/${module}/README.md
 
-# Implementation notes
-implementation=./IMPLEMENTATION.md => ${destination}/${module}/IMPLEMENTATION.md
-
 # === Header Files ===
 # Include directory with all headers (dmfsi.h and dmfsi_defs.h)
 inc=./inc => ${destination}/${module}/inc
