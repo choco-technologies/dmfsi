@@ -1,0 +1,30 @@
+# DMOD Resource File for dmfsi
+# This file specifies where resources should be installed
+
+# === Core Module ===
+# Main module file - always installed
+dmf=./dmfsi.dmf => ${DMOD_DMF_DIR}/${module}.dmf
+
+# Compressed module (if exists)
+dmfc=./dmfsi.dmfc => ${DMOD_DMF_DIR}/${module}.dmfc
+
+# Dependencies file (if exists)
+dmd=./dmfsi.dmd => ${destination}/${module}.dmd
+
+# === Documentation ===
+# Module documentation in markdown format for dmf-man tool
+docs=./docs => ${destination}/${module}/docs
+
+# README file
+readme=./README.md => ${destination}/${module}/README.md
+
+# Implementation notes
+implementation=./IMPLEMENTATION.md => ${destination}/${module}/IMPLEMENTATION.md
+
+# === Header Files ===
+# Include directory with all headers (dmfsi.h and dmfsi_defs.h)
+inc=./inc => ${destination}/${module}/inc
+
+# === License ===
+# License file
+license=./LICENSE => ${destination}/${module}/LICENSE

@@ -1,0 +1,22 @@
+# DMOD Resource File for ramfs
+# This file specifies where resources should be installed
+# RamFS is a DMFSI implementation example
+
+# === Core Module ===
+# Main module file - always installed
+dmf=./ramfs.dmf => ${DMOD_DMF_DIR}/${module}.dmf
+
+# Compressed module (if exists)
+dmfc=./ramfs.dmfc => ${DMOD_DMF_DIR}/${module}.dmfc
+
+# === Documentation ===
+# README for the example
+readme=./README.md => ${destination}/${module}/README.md
+
+# === Source Code ===
+# Source code as reference implementation
+src=./ramfs.c => ${destination}/${module}/src/ramfs.c
+
+# Build files
+makefile=./Makefile => ${destination}/${module}/Makefile
+cmake=./CMakeLists.txt => ${destination}/${module}/CMakeLists.txt
