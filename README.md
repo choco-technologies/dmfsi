@@ -37,7 +37,7 @@ dmf-get headers dmfsi
 dmf-get docs dmfsi
 ```
 
-DMFSI includes DMR (DMOD Resource File) support for flexible installation. See [DMR Support Documentation](docs/dmr-support.md) for details.
+DMFSI includes DMR (DMOD Resource File) support for flexible installation.
 
 ## Building
 
@@ -145,8 +145,7 @@ dmfsi/
 │   └── dmfsi.c         # Interface registration
 ├── docs/               # Documentation
 │   ├── dmfsi-api.md       # API reference
-│   ├── getting-started.md # Getting started guide
-│   └── dmr-support.md     # DMR resource support
+│   └── getting-started.md # Getting started guide
 ├── examples/
 │   ├── ramfs/          # Example RAM file system implementation
 │   │   ├── ramfs.c
@@ -164,7 +163,6 @@ dmfsi/
 
 - [API Reference](docs/dmfsi-api.md) - Complete API documentation for all DMFSI functions
 - [Getting Started Guide](docs/getting-started.md) - Quick start guide with examples
-- [DMR Support](docs/dmr-support.md) - Information about resource packaging and installation
 - [RamFS Example](examples/ramfs/README.md) - Reference implementation documentation
 
 ## License
