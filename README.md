@@ -17,6 +17,28 @@ The interface includes:
 - **Directory management**: mkdir, direxists
 - **Initialization**: init, deinit
 
+## Installation
+
+### Using dmf-get (Recommended)
+
+The easiest way to install DMFSI is using the DMOD package manager:
+
+```bash
+# Install full package with headers and documentation
+dmf-get dmfsi
+
+# Install minimal package (module only)
+dmf-get --mini dmfsi
+
+# Install headers only (for development)
+dmf-get headers dmfsi
+
+# Install documentation only
+dmf-get docs dmfsi
+```
+
+DMFSI includes DMR (DMOD Resource File) support for flexible installation. See [DMR Support Documentation](docs/dmr-support.md) for details.
+
 ## Building
 
 ### Prerequisites
@@ -115,21 +137,35 @@ To implement a new file system:
 ## File Structure
 
 ```
-dmod-fsi/
+dmfsi/
 ├── inc/
 │   ├── dmfsi.h         # Main interface definition
 │   └── dmfsi_defs.h    # DMOD-generated definitions
 ├── src/
 │   └── dmfsi.c         # Interface registration
+├── docs/               # Documentation
+│   ├── dmfsi-api.md       # API reference
+│   ├── getting-started.md # Getting started guide
+│   └── dmr-support.md     # DMR resource support
 ├── examples/
 │   ├── ramfs/          # Example RAM file system implementation
 │   │   ├── ramfs.c
+│   │   ├── ramfs.dmr      # Resource file for ramfs
+│   │   ├── README.md
 │   │   ├── Makefile
 │   │   └── CMakeLists.txt
 │   └── CMakeLists.txt
+├── dmfsi.dmr           # Resource file for dmfsi
 ├── Makefile            # Build file for Make
 └── CMakeLists.txt      # Build file for CMake
 ```
+
+## Documentation
+
+- [API Reference](docs/dmfsi-api.md) - Complete API documentation for all DMFSI functions
+- [Getting Started Guide](docs/getting-started.md) - Quick start guide with examples
+- [DMR Support](docs/dmr-support.md) - Information about resource packaging and installation
+- [RamFS Example](examples/ramfs/README.md) - Reference implementation documentation
 
 ## License
 
