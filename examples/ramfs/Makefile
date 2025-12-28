@@ -11,33 +11,36 @@ ifndef DMOD_DIR
 ifdef ENV_DMOD_DIR
 DMOD_DIR := $(ENV_DMOD_DIR)
 else
-# DMOD_DIR not provided, fetch DMOD automatically
-$(info DMOD_DIR not set, fetching DMOD from git repository)
-
-# Allow override of DMOD git repository and branch
-DMOD_GIT_REPOSITORY ?= https://github.com/choco-technologies/dmod.git
-DMOD_GIT_TAG ?= develop
-
-# Set DMOD_DIR to a local directory where we'll fetch DMOD
+# DMOD_DIR not provided, will fetch DMOD automatically
 DMOD_DIR := $(CURDIR)/../../.dmod
-
-# Check if DMOD already exists
-ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
-# DMOD doesn't exist, clone it
-$(info Cloning DMOD to $(DMOD_DIR)...)
-$(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR))
-$(info DMOD cloned successfully)
-
-# Build DMOD to generate required configuration files
-$(info Building DMOD system...)
-$(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory)
-$(info DMOD built successfully)
-endif
+AUTO_FETCH_DMOD := 1
 endif
 endif
 
 # Path to DMFSI module
 DMFSI_DIR=../..
+
+# Allow override of DMOD git repository and branch (for auto-fetch)
+DMOD_GIT_REPOSITORY ?= https://github.com/choco-technologies/dmod.git
+DMOD_GIT_TAG ?= develop
+
+# Auto-fetch DMOD if needed
+ifdef AUTO_FETCH_DMOD
+ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
+$(info DMOD_DIR not set, fetching DMOD from git repository)
+$(info Cloning DMOD to $(DMOD_DIR)...)
+_CLONE_RESULT := $(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR) 2>&1)
+ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
+$(error Failed to clone DMOD: $(_CLONE_RESULT))
+endif
+$(info Building DMOD system...)
+_BUILD_RESULT := $(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory 2>&1)
+ifeq ($(wildcard $(DMOD_DIR)/build/dmod-config.h),)
+$(error Failed to build DMOD: $(_BUILD_RESULT))
+endif
+$(info DMOD fetched and built successfully)
+endif
+endif
 
 # -----------------------------------------------------------------------------
 #  Paths initialization

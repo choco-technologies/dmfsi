@@ -25,18 +25,16 @@ if(NOT DEFINED DMOD_DIR)
             GIT_TAG        ${DMOD_GIT_TAG}
         )
         
+        # FetchContent_MakeAvailable handles both population and making available
         FetchContent_MakeAvailable(dmod)
         
-        # Set DMOD_DIR to the fetched source directory
-        FetchContent_GetProperties(dmod)
-        if(NOT dmod_POPULATED)
-            FetchContent_Populate(dmod)
-        endif()
-        set(DMOD_DIR ${dmod_SOURCE_DIR})
+        # Get the source directory set by FetchContent
+        FetchContent_GetProperties(dmod SOURCE_DIR DMOD_DIR)
         
         message(STATUS "DMOD fetched to: ${DMOD_DIR}")
     endif()
 endif()
+
 
 # Allow DMOD_MODE to be set via command line or default to DMOD_MODULE
 if(NOT DEFINED DMOD_MODE)
