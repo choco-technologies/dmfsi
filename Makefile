@@ -8,7 +8,33 @@
 
 # Path to DMOD directory (can be overridden via command line or environment)
 ifndef DMOD_DIR
-$(error DMOD_DIR is not set. Please set it to the path of the DMOD repository)
+# Check if DMOD_DIR is set in environment
+ifdef ENV_DMOD_DIR
+DMOD_DIR := $(ENV_DMOD_DIR)
+else
+# DMOD_DIR not provided, fetch DMOD automatically
+$(info DMOD_DIR not set, fetching DMOD from git repository)
+
+# Allow override of DMOD git repository and branch
+DMOD_GIT_REPOSITORY ?= https://github.com/choco-technologies/dmod.git
+DMOD_GIT_TAG ?= develop
+
+# Set DMOD_DIR to a local directory where we'll fetch DMOD
+DMOD_DIR := $(CURDIR)/.dmod
+
+# Check if DMOD already exists
+ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
+# DMOD doesn't exist, clone it
+$(info Cloning DMOD to $(DMOD_DIR)...)
+$(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR))
+$(info DMOD cloned successfully)
+
+# Build DMOD to generate required configuration files
+$(info Building DMOD system...)
+$(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory)
+$(info DMOD built successfully)
+endif
+endif
 endif
 
 # -----------------------------------------------------------------------------

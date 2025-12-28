@@ -61,5 +61,8 @@ build/
 dmod-cache.mk
 dmod-cache-tmp.mk
 
+# Auto-fetched DMOD directory
+.dmod/
+
 # DMOD generated files
 *_defs.h
