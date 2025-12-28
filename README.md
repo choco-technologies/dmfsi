@@ -21,9 +21,14 @@ The interface includes:
 
 ### Prerequisites
 
-- DMOD library (https://github.com/choco-technologies/dmod.git)
 - GNU Make or CMake (version 3.18 or higher)
 - GCC or compatible C compiler
+- Git (for automatic DMOD fetching)
+- DMOD library (https://github.com/choco-technologies/dmod.git) - **automatically fetched if not provided**
+
+### Automatic DMOD Fetching
+
+If you don't have DMOD installed, both CMake and Make will automatically fetch and build it for you. Simply run the build commands without setting `DMOD_DIR`.
 
 ### Build with CMake
 
@@ -33,6 +38,18 @@ DMOD modules can be built using CMake in two modes:
 
 In this mode, modules are built as dynamically loadable DMF (DMOD Module Format) files:
 
+**Option 1: Automatic DMOD fetching (recommended for quick start)**
+```bash
+# Build the DMFSI interface module with examples
+# DMOD will be automatically fetched from git
+cd /path/to/dmod-fsi
+cmake -B build -DDMOD_BUILD_EXAMPLES=ON -DDMOD_BUILD_TOOLS=OFF -DDMOD_BUILD_TESTS=OFF
+cmake --build build
+
+# DMF files will be created in build/dmf/
+```
+
+**Option 2: Use existing DMOD installation**
 ```bash
 # First, build DMOD
 cd /path/to/dmod
@@ -41,7 +58,7 @@ make
 # Set DMOD_DIR to point to your DMOD installation
 export DMOD_DIR=/path/to/dmod
 
-# Build the DMFSI interface module with examples (DMOD_MODULE is the default)
+# Build the DMFSI interface module with examples
 cd /path/to/dmod-fsi
 cmake -B build -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
@@ -54,15 +71,12 @@ cmake --build build
 In this mode, modules are built as static libraries that can be linked into a DMOD system application:
 
 ```bash
-# First, build DMOD
-cd /path/to/dmod
-make
+# With automatic DMOD fetching
+cmake -B build -DDMOD_MODE=DMOD_SYSTEM -DDMOD_BUILD_EXAMPLES=ON -DDMOD_BUILD_TOOLS=OFF -DDMOD_BUILD_TESTS=OFF
+cmake --build build
 
-# Set DMOD_DIR to point to your DMOD installation
+# Or with existing DMOD installation
 export DMOD_DIR=/path/to/dmod
-
-# Build the DMFSI interface as a static library
-cd /path/to/dmod-fsi
 cmake -B build -DDMOD_MODE=DMOD_SYSTEM -DDMOD_BUILD_EXAMPLES=ON
 cmake --build build
 
@@ -73,6 +87,19 @@ cmake --build build
 
 DMOD modules can also be built using the DMOD build system with Make:
 
+**Option 1: Automatic DMOD fetching (recommended for quick start)**
+```bash
+# Build the DMFSI interface module
+# DMOD will be automatically cloned and built to .dmod/
+cd /path/to/dmod-fsi
+make
+
+# Build the RamFS example
+cd examples/ramfs
+make
+```
+
+**Option 2: Use existing DMOD installation**
 ```bash
 # First, build DMOD
 cd /path/to/dmod

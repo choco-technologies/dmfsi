@@ -108,3 +108,73 @@ jobs:
         path: |
           dmod/build/**/*.dmf
         if-no-files-found: ignore
+
+  build-auto-fetch-cmake:
+    name: Build with Auto-Fetched DMOD (CMake)
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout dmod-fsi
+      uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake git
+    
+    - name: Build DMFSI with auto-fetched DMOD
+      run: |
+        cmake -B build -DDMOD_BUILD_EXAMPLES=ON -DDMOD_BUILD_TOOLS=OFF -DDMOD_BUILD_TESTS=OFF
+        cmake --build build
+    
+    - name: Verify DMF files were created
+      run: |
+        test -f build/dmf/dmfsi.dmf || (echo "dmfsi.dmf not found" && exit 1)
+        test -f build/dmf/ramfs.dmf || (echo "ramfs.dmf not found" && exit 1)
+        echo "All DMF files created successfully"
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-auto-fetch-cmake-artifacts
+        path: |
+          build/dmf/*.dmf
+        if-no-files-found: error
+
+  build-auto-fetch-make:
+    name: Build with Auto-Fetched DMOD (Make)
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout dmod-fsi
+      uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential git
+    
+    - name: Build DMFSI with auto-fetched DMOD
+      run: |
+        make
+    
+    - name: Build RamFS example with auto-fetched DMOD
+      run: |
+        cd examples/ramfs
+        make
+    
+    - name: Verify DMF files were created
+      run: |
+        test -f .dmod/build/dmf/dmfsi.dmf || (echo "dmfsi.dmf not found" && exit 1)
+        test -f .dmod/build/dmf/ramfs.dmf || (echo "ramfs.dmf not found" && exit 1)
+        echo "All DMF files created successfully"
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-auto-fetch-make-artifacts
+        path: |
+          .dmod/build/dmf/dmfsi.dmf
+          .dmod/build/dmf/ramfs.dmf
+        if-no-files-found: error
+
