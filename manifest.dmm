@@ -1,0 +1,8 @@
+# Include dynamically generated versions list from latest release
+$include https://github.com/choco-technologies/dmfsi/releases/download/vlatest/versions.dmm
+
+# Module entries with version placeholder - will be expanded by $version-available
+dmfsi https://github.com/choco-technologies/dmfsi/releases/download/v<version>/dmfsi-v<version>-<arch_name>.zip
+
+# RamFS example implementation
+ramfs https://github.com/choco-technologies/dmfsi/releases/download/v<version>/dmfsi-v<version>-<arch_name>.zip

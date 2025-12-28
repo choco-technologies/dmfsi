@@ -116,12 +116,21 @@ jobs:
             cp $DMF_DIR/ramfs.dmd release_package/
           fi
           
+          # Copy resource files (.dmr)
+          cp dmfsi.dmr release_package/
+          if [ -f ramfs.dmr ]; then
+            cp ramfs.dmr release_package/
+          fi
+          
           # Copy header files
           mkdir -p release_package/include
           cp inc/dmfsi.h release_package/include/
           cp $BUILD_DIR/dmfsi_defs.h release_package/include/
           
-          # Copy documentation and license
+          # Copy documentation (for dmf-man) and license
+          if [ -d docs ]; then
+            cp -r docs release_package/
+          fi
           cp README.md release_package/
           cp LICENSE release_package/
           if [ -f IMPLEMENTATION.md ]; then
@@ -194,8 +203,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: versions-manifest
-          path: versions.dmm
+          path: |
+            versions.dmm
+            manifest.dmm
           retention-days: 1
+
 
   upload-release-assets:
     name: Upload Release Assets
@@ -247,6 +259,15 @@ jobs:
               --clobber
           fi
           
+          # Upload manifest.dmm to the versioned release
+          if [ -f artifacts/versions-manifest/manifest.dmm ]; then
+            echo "Uploading manifest.dmm to ${{ github.event.release.tag_name }}..."
+            gh release upload ${{ github.event.release.tag_name }} \
+              artifacts/versions-manifest/manifest.dmm \
+              --repo ${{ github.repository }} \
+              --clobber
+          fi
+          
           echo "Successfully uploaded ${#zip_files[@]} artifact(s) to ${{ github.event.release.tag_name }}"
       
       - name: Create or update latest release
@@ -291,6 +312,15 @@ jobs:
             echo "Uploading versions.dmm to vlatest..."
             gh release upload vlatest \
               artifacts/versions-manifest/versions.dmm \
+              --repo ${{ github.repository }} \
+              --clobber
+          fi
+          
+          # Upload manifest.dmm to the latest release
+          if [ -f artifacts/versions-manifest/manifest.dmm ]; then
+            echo "Uploading manifest.dmm to vlatest..."
+            gh release upload vlatest \
+              artifacts/versions-manifest/manifest.dmm \
               --repo ${{ github.repository }} \
               --clobber
           fi

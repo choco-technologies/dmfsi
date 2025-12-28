@@ -1,0 +1,15 @@
+# DMOD Resource File for ramfs
+# This file specifies where resources should be installed
+
+# === Core Module ===
+# Main module file - always installed
+dmf=./ramfs.dmf => ${destination}/${module}.dmf
+
+# Compressed module
+dmfc=./ramfs.dmfc => ${destination}/${module}.dmfc
+
+# Dependencies file (if exists)
+dmd=./ramfs.dmd => ${destination}/${module}.dmd
+
+# Version information
+version=./ramfs_version.txt => ${destination}/${module}_version.txt
