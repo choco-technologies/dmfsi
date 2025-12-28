@@ -29,14 +29,14 @@ ifdef AUTO_FETCH_DMOD
 ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
 $(info DMOD_DIR not set, fetching DMOD from git repository)
 $(info Cloning DMOD to $(DMOD_DIR)...)
-_CLONE_RESULT := $(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR) 2>&1)
+DMOD_CLONE_OUTPUT := $(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR) 2>&1)
 ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
-$(error Failed to clone DMOD: $(_CLONE_RESULT))
+$(error Failed to clone DMOD: $(DMOD_CLONE_OUTPUT))
 endif
 $(info Building DMOD system...)
-_BUILD_RESULT := $(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory 2>&1)
+DMOD_BUILD_OUTPUT := $(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory 2>&1)
 ifeq ($(wildcard $(DMOD_DIR)/build/dmod-config.h),)
-$(error Failed to build DMOD: $(_BUILD_RESULT))
+$(error Failed to build DMOD: $(DMOD_BUILD_OUTPUT))
 endif
 $(info DMOD fetched and built successfully)
 endif
