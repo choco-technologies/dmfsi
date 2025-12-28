@@ -73,6 +73,7 @@ jobs:
           
           # First run cmake to fetch dependencies with version from tag
           cmake .. \
+            -DDMOD_MODE=DMOD_MODULE \
             -DDMOD_TOOLS_NAME=arch/${{ matrix.arch_name }} \
             -DDMOD_MODULE_VERSION="${{ steps.get_version.outputs.version }}" \
             -DDMOD_BUILD_EXAMPLES=ON
