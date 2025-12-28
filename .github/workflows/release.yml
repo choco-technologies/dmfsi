@@ -105,7 +105,9 @@ jobs:
           # Copy ramfs example module
           if [ -f $DMF_DIR/ramfs.dmf ]; then
             cp $DMF_DIR/ramfs.dmf release_package/
-            cp $DMF_DIR/ramfs_version.txt release_package/
+            if [ -f $DMF_DIR/ramfs_version.txt ]; then
+              cp $DMF_DIR/ramfs_version.txt release_package/
+            fi
           fi
           if [ -f $DMFC_DIR/ramfs.dmfc ]; then
             cp $DMFC_DIR/ramfs.dmfc release_package/
