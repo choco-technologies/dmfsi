@@ -126,7 +126,7 @@ jobs:
     
     - name: Build DMFSI with auto-fetched DMOD
       run: |
-        cmake -B build -DDMOD_BUILD_EXAMPLES=ON -DDMOD_BUILD_TOOLS=OFF -DDMOD_BUILD_TESTS=OFF
+        cmake -B build -DDMOD_MODE=DMOD_MODULE -DDMOD_BUILD_EXAMPLES=ON -DDMOD_BUILD_TOOLS=OFF -DDMOD_BUILD_TESTS=OFF
         cmake --build build
     
     - name: Verify DMF files were created

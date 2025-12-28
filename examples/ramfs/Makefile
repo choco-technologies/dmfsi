@@ -24,20 +24,14 @@ ifdef AUTO_FETCH_DMOD
 ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
 $(info DMOD_DIR not set, fetching DMOD from git repository)
 $(info Cloning DMOD to $(DMOD_DIR)...)
-DMOD_CLONE_OUTPUT := $(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR) 2>&1 || echo "CLONE_FAILED")
-ifneq (,$(findstring CLONE_FAILED,$(DMOD_CLONE_OUTPUT)))
-$(error Failed to clone DMOD: $(DMOD_CLONE_OUTPUT))
-endif
+_unused := $(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR) 2>&1 || echo "CLONE_FAILED" >&2)
 ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
-$(error Failed to clone DMOD: $(DMOD_CLONE_OUTPUT))
+$(error Failed to clone DMOD from $(DMOD_GIT_REPOSITORY))
 endif
 $(info Building DMOD system...)
-DMOD_BUILD_OUTPUT := $(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory 2>&1 || echo "BUILD_FAILED")
-ifneq (,$(findstring BUILD_FAILED,$(DMOD_BUILD_OUTPUT)))
-$(error Failed to build DMOD: $(DMOD_BUILD_OUTPUT))
-endif
+_unused := $(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory 2>&1 || echo "BUILD_FAILED" >&2)
 ifeq ($(wildcard $(DMOD_DIR)/build/dmod-config.h),)
-$(error Failed to build DMOD: $(DMOD_BUILD_OUTPUT))
+$(error Failed to build DMOD)
 endif
 $(info DMOD fetched and built successfully)
 endif
