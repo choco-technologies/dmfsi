@@ -7,11 +7,35 @@
 
 # Path to DMOD directory (can be overridden via command line or environment)
 ifndef DMOD_DIR
-$(error DMOD_DIR is not set. Please set it to the path of the DMOD repository)
+# DMOD_DIR not provided, will fetch DMOD automatically
+DMOD_DIR := $(CURDIR)/../../.dmod
+AUTO_FETCH_DMOD := 1
 endif
 
 # Path to DMFSI module
 DMFSI_DIR=../..
+
+# Allow override of DMOD git repository and branch (for auto-fetch)
+DMOD_GIT_REPOSITORY ?= https://github.com/choco-technologies/dmod.git
+DMOD_GIT_TAG ?= develop
+
+# Auto-fetch DMOD if needed
+ifdef AUTO_FETCH_DMOD
+ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
+$(info DMOD_DIR not set, fetching DMOD from git repository)
+$(info Cloning DMOD to $(DMOD_DIR)...)
+_unused := $(shell git clone --depth 1 --branch $(DMOD_GIT_TAG) $(DMOD_GIT_REPOSITORY) $(DMOD_DIR) 2>&1 || echo "CLONE_FAILED" >&2)
+ifeq ($(wildcard $(DMOD_DIR)/paths.mk),)
+$(error Failed to clone DMOD from $(DMOD_GIT_REPOSITORY))
+endif
+$(info Building DMOD system...)
+_unused := $(shell cd $(DMOD_DIR) && $(MAKE) --no-print-directory 2>&1 || echo "BUILD_FAILED" >&2)
+ifeq ($(wildcard $(DMOD_DIR)/build/dmod-config.h),)
+$(error Failed to build DMOD)
+endif
+$(info DMOD fetched and built successfully)
+endif
+endif
 
 # -----------------------------------------------------------------------------
 #  Paths initialization

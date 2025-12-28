@@ -1,13 +1,40 @@
 cmake_minimum_required(VERSION 3.18)
 
-# DMOD_DIR must be set (either via command line or environment variable)
+# DMOD_DIR handling: use provided path, environment variable, or fetch from git
 if(NOT DEFINED DMOD_DIR)
     if(DEFINED ENV{DMOD_DIR})
         set(DMOD_DIR $ENV{DMOD_DIR})
     else()
-        message(FATAL_ERROR "DMOD_DIR is not set. Please set it to the path of the DMOD repository")
+        # DMOD_DIR not provided, fetch DMOD using FetchContent
+        message(STATUS "DMOD_DIR not set, fetching DMOD from git repository")
+        
+        include(FetchContent)
+        
+        # Allow override of DMOD git repository and branch
+        if(NOT DEFINED DMOD_GIT_REPOSITORY)
+            set(DMOD_GIT_REPOSITORY "https://github.com/choco-technologies/dmod.git")
+        endif()
+        
+        if(NOT DEFINED DMOD_GIT_TAG)
+            set(DMOD_GIT_TAG "develop")
+        endif()
+        
+        FetchContent_Declare(
+            dmod
+            GIT_REPOSITORY ${DMOD_GIT_REPOSITORY}
+            GIT_TAG        ${DMOD_GIT_TAG}
+        )
+        
+        # FetchContent_MakeAvailable handles both population and making available
+        FetchContent_MakeAvailable(dmod)
+        
+        # Set DMOD_DIR to the fetched source directory
+        set(DMOD_DIR ${dmod_SOURCE_DIR})
+        
+        message(STATUS "DMOD fetched to: ${DMOD_DIR}")
     endif()
 endif()
+
 
 # Allow DMOD_MODE to be set via command line or default to DMOD_MODULE
 if(NOT DEFINED DMOD_MODE)
