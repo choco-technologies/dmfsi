@@ -28,8 +28,7 @@ if(NOT DEFINED DMOD_DIR)
         # FetchContent_MakeAvailable handles both population and making available
         FetchContent_MakeAvailable(dmod)
         
-        # Get the source directory set by FetchContent
-        FetchContent_GetProperties(dmod)
+        # Set DMOD_DIR to the fetched source directory
         set(DMOD_DIR ${dmod_SOURCE_DIR})
         
         message(STATUS "DMOD fetched to: ${DMOD_DIR}")
