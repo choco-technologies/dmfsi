@@ -1,2 +1,0 @@
-/usr/bin/ar qc libramfs.a CMakeFiles/ramfs.dir/ramfs.c.o
-/usr/bin/ranlib libramfs.a
