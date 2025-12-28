@@ -112,6 +112,8 @@ jobs:
   build-auto-fetch-cmake:
     name: Build with Auto-Fetched DMOD (CMake)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - name: Checkout dmod-fsi
@@ -144,6 +146,8 @@ jobs:
   build-auto-fetch-make:
     name: Build with Auto-Fetched DMOD (Make)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - name: Checkout dmod-fsi
