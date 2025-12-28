@@ -29,7 +29,8 @@ if(NOT DEFINED DMOD_DIR)
         FetchContent_MakeAvailable(dmod)
         
         # Get the source directory set by FetchContent
-        FetchContent_GetProperties(dmod SOURCE_DIR DMOD_DIR)
+        FetchContent_GetProperties(dmod)
+        set(DMOD_DIR ${dmod_SOURCE_DIR})
         
         message(STATUS "DMOD fetched to: ${DMOD_DIR}")
     endif()

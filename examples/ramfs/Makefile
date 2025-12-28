@@ -7,14 +7,9 @@
 
 # Path to DMOD directory (can be overridden via command line or environment)
 ifndef DMOD_DIR
-# Check if DMOD_DIR is set in environment
-ifdef ENV_DMOD_DIR
-DMOD_DIR := $(ENV_DMOD_DIR)
-else
 # DMOD_DIR not provided, will fetch DMOD automatically
 DMOD_DIR := $(CURDIR)/../../.dmod
 AUTO_FETCH_DMOD := 1
-endif
 endif
 
 # Path to DMFSI module
