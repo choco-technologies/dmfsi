@@ -131,6 +131,34 @@ dmod-fsi/
 └── CMakeLists.txt      # Build file for CMake
 ```
 
+## Release Process
+
+The repository includes an automated release workflow that builds and packages the DMFSI module for all supported DMOD architectures.
+
+### Creating a Release
+
+1. Create a new release on GitHub with a version tag (e.g., `v1.0`, `v1.1`)
+2. The release workflow will automatically:
+   - Discover all available DMOD architectures
+   - Build the dmfsi interface module for each architecture
+   - Build the ramfs example module for each architecture
+   - Package the modules with headers, documentation, and license
+   - Create versioned release archives (e.g., `dmfsi-v1.0-x86_64-linux.zip`)
+   - Generate a `versions.dmm` manifest file
+   - Upload all artifacts to the GitHub release
+   - Create/update a `vlatest` release pointing to the newest version
+
+### Release Package Contents
+
+Each release archive includes:
+- `dmfsi.dmf` - Main interface module
+- `ramfs.dmf` - Example RAM file system implementation
+- `include/` - Header files (dmfsi.h, dmfsi_defs.h)
+- `README.md` - Documentation
+- `LICENSE` - License file
+- `IMPLEMENTATION.md` - Implementation details
+- `RELEASE_NOTES.txt` - Release notes from GitHub
+
 ## License
 
 MIT License - See LICENSE file for details
