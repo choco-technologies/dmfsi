@@ -402,4 +402,22 @@ dmod_dmfsi_dif( 1.0, int, _mkdir, (dmfsi_context_t ctx, const char* path, int mo
  */
 dmod_dmfsi_dif( 1.0, int, _direxists, (dmfsi_context_t ctx, const char* path) );
 
+/**
+ * @brief Get the absolute path at which a file system is currently mounted
+ *
+ * This is a builtin API with a weak default implementation (see dmfsi.c),
+ * meant to be overridden by whoever mounts the file system (e.g. dmvfs). It
+ * allows a file system implementation to ask where it has been mounted, e.g.
+ * so that a driver-backed file system (dmdevfs) can answer a driver's
+ * dmdrvi_get_path() request with a fully qualified path. If nothing
+ * overrides the weak default, DMFSI_ERR_NOT_FOUND is returned.
+ *
+ * @param ctx File system context (as passed to/returned by the FS's own _init())
+ * @param path_buffer Buffer to receive the absolute, null-terminated mount path
+ * @param buffer_size Size of path_buffer
+ *
+ * @return DMFSI_OK on success, error code otherwise (e.g. DMFSI_ERR_NOT_FOUND if ctx is not currently mounted)
+ */
+DMOD_BUILTIN_API( dmfsi, 1.0, int, _get_mount_path, (dmfsi_context_t ctx, char* path_buffer, size_t buffer_size) );
+
 #endif // DMFSI_H

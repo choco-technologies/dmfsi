@@ -27,3 +27,18 @@ int dmod_deinit(void)
     Dmod_Printf("DMFSI interface module deinitialized\n");
     return 0;
 }
+
+/**
+ * @brief Weak default for dmfsi_get_mount_path()
+ *
+ * Used when nothing (e.g. dmvfs) overrides it with a real implementation -
+ * a file system that isn't mounted through anything able to answer this is
+ * simply reported as not found.
+ */
+DMOD_INPUT_WEAK_API_DECLARATION( dmfsi, 1.0, int, _get_mount_path, (dmfsi_context_t ctx, char* path_buffer, size_t buffer_size) )
+{
+    (void)ctx;
+    (void)path_buffer;
+    (void)buffer_size;
+    return DMFSI_ERR_NOT_FOUND;
+}
