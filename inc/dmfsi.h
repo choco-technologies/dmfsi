@@ -403,21 +403,23 @@ dmod_dmfsi_dif( 1.0, int, _mkdir, (dmfsi_context_t ctx, const char* path, int mo
 dmod_dmfsi_dif( 1.0, int, _direxists, (dmfsi_context_t ctx, const char* path) );
 
 /**
- * @brief Get the absolute path at which a file system is currently mounted
+ * @brief Notify a file system that it has been fully mounted
  *
- * This is a builtin API with a weak default implementation (see dmfsi.c),
- * meant to be overridden by whoever mounts the file system (e.g. dmvfs). It
- * allows a file system implementation to ask where it has been mounted, e.g.
- * so that a driver-backed file system (dmdevfs) can answer a driver's
- * dmdrvi_get_path() request with a fully qualified path. If nothing
- * overrides the weak default, DMFSI_ERR_NOT_FOUND is returned.
+ * Called by the mounter (e.g. dmvfs) once the mount is fully registered,
+ * handing the file system its own absolute mount path directly (the mounter
+ * already has it in hand - it's the same path it was told to mount at). A
+ * file system that needs to resolve its own absolute mount path for
+ * something it already set up during _init() (e.g. a driver-backed file
+ * system pushing paths down to its drivers, see dmdrvi_path_ready() in
+ * dmdrvi.h) should cache it from here, not try to resolve it from inside
+ * _init() itself, where the mount is not registered anywhere yet.
  *
- * @param ctx File system context (as passed to/returned by the FS's own _init())
- * @param path_buffer Buffer to receive the absolute, null-terminated mount path
- * @param buffer_size Size of path_buffer
+ * Implementing this dif is optional - a file system that doesn't need its
+ * own mount path can simply not implement it.
  *
- * @return DMFSI_OK on success, error code otherwise (e.g. DMFSI_ERR_NOT_FOUND if ctx is not currently mounted)
+ * @param ctx File system context
+ * @param mount_path Absolute, null-terminated path at which ctx is mounted
  */
-DMOD_BUILTIN_API( dmfsi, 1.0, int, _get_mount_path, (dmfsi_context_t ctx, char* path_buffer, size_t buffer_size) );
+dmod_dmfsi_dif( 1.0, void, _mounted, (dmfsi_context_t ctx, const char* mount_path) );
 
 #endif // DMFSI_H
