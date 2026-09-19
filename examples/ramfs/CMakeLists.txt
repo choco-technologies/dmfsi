@@ -33,7 +33,11 @@ if(DMOD_SYSTEM)
     
     target_link_libraries(${DMOD_MODULE_NAME} PUBLIC dmod dmfsi_if)
     target_link_libraries(${DMOD_MODULE_NAME}_if INTERFACE ${DMOD_MODULE_NAME})
-    
+
+    # See dmfsi's own CMakeLists.txt: no DMOD_MODULE_NAME compile definition in
+    # DMOD_SYSTEM mode, so dmod_sal.h requires DMOD_CURRENT_ALLOCATOR manually.
+    dmod_set_current_allocator(${DMOD_MODULE_NAME})
+
     # Generate the _defs.h file for interface definitions
     to_snake_case(${DMOD_MODULE_NAME} DMOD_MODULE_NAME_SNAKE_CASE)
     set(DMOD_MODULE_TYPE "Library")

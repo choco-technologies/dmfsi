@@ -81,7 +81,13 @@ if(DMOD_SYSTEM)
     
     target_link_libraries(${DMOD_MODULE_NAME} PUBLIC dmod)
     target_link_libraries(${DMOD_MODULE_NAME}_if INTERFACE ${DMOD_MODULE_NAME})
-    
+
+    # In DMOD_SYSTEM mode there is no DMOD_MODULE_NAME compile definition (that's
+    # only set by dmod_add_library() in the DMOD_MODULE branch below), so
+    # dmod_sal.h requires DMOD_CURRENT_ALLOCATOR to be defined manually here -
+    # see dmod's dmod_set_current_allocator() in scripts/CMakeLists.txt.
+    dmod_set_current_allocator(${DMOD_MODULE_NAME})
+
     # Generate the _defs.h file for interface definitions
     to_snake_case(${DMOD_MODULE_NAME} DMOD_MODULE_NAME_SNAKE_CASE)
     set(DMOD_MODULE_TYPE "Library")
