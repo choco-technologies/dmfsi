@@ -57,7 +57,12 @@ typedef struct dmfsi_context* dmfsi_context_t;
 /**
  * @brief File Size
  */
-typedef uint64_t dmfsi_size_t;
+typedef Dmod_FileSize_t dmfsi_size_t;
+
+/**
+ * @brief file offset
+ */
+typedef Dmod_FileOffset_t dmfsi_offset_t;
 
 /**
  * @brief Directory entry structure
@@ -221,7 +226,7 @@ dmod_dmfsi_dif( 1.0, int, _fclose, (dmfsi_context_t ctx, void* fp) );
  * @param read Pointer to store the number of bytes actually read
  * @return DMFSI_OK on success, error code otherwise
  */
-dmod_dmfsi_dif( 2.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, dmfsi_size_t size, dmfsi_size_t* read) );
+dmod_dmfsi_dif( 1.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, size_t size, size_t* read) );
 
 /**
  * @brief Write to a file
@@ -232,7 +237,7 @@ dmod_dmfsi_dif( 2.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, 
  * @param written Pointer to store the number of bytes actually written
  * @return DMFSI_OK on success, error code otherwise
  */
-dmod_dmfsi_dif( 2.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* buffer, dmfsi_size_t size, dmfsi_size_t* written) );
+dmod_dmfsi_dif( 2.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* buffer, size_t size, size_t* written) );
 
 /**
  * @brief Seek to a position in a file
@@ -242,7 +247,7 @@ dmod_dmfsi_dif( 2.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* b
  * @param whence Seek mode (DMFSI_SEEK_*)
  * @return The new position, or negative error code
  */
-dmod_dmfsi_dif( 1.0, long, _lseek, (dmfsi_context_t ctx, void* fp, long offset, int whence) );
+dmod_dmfsi_dif( 1.0, dmfsi_offset_t, _lseek, (dmfsi_context_t ctx, void* fp, dmfsi_offset_t offset, int whence) );
 
 /**
  * @brief Perform I/O control operation
@@ -301,7 +306,7 @@ dmod_dmfsi_dif( 1.0, int, _eof, (dmfsi_context_t ctx, void* fp) );
  * @param fp File handle
  * @return File size in bytes, or negative error code
  */
-dmod_dmfsi_dif( 1.0, long, _size, (dmfsi_context_t ctx, void* fp) );
+dmod_dmfsi_dif( 1.0, dmfsi_size_t, _size, (dmfsi_context_t ctx, void* fp) );
 
 /**
  * @brief Flush file buffers
