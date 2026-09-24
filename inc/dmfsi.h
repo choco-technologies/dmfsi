@@ -237,7 +237,7 @@ dmod_dmfsi_dif( 1.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, 
  * @param written Pointer to store the number of bytes actually written
  * @return DMFSI_OK on success, error code otherwise
  */
-dmod_dmfsi_dif( 2.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* buffer, size_t size, size_t* written) );
+dmod_dmfsi_dif( 1.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* buffer, size_t size, size_t* written) );
 
 /**
  * @brief Seek to a position in a file
@@ -247,7 +247,7 @@ dmod_dmfsi_dif( 2.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* b
  * @param whence Seek mode (DMFSI_SEEK_*)
  * @return The new position, or negative error code
  */
-dmod_dmfsi_dif( 1.0, dmfsi_offset_t, _lseek, (dmfsi_context_t ctx, void* fp, dmfsi_offset_t offset, int whence) );
+dmod_dmfsi_dif( 2.0, dmfsi_offset_t, _lseek, (dmfsi_context_t ctx, void* fp, dmfsi_offset_t offset, int whence) );
 
 /**
  * @brief Perform I/O control operation
@@ -290,7 +290,7 @@ dmod_dmfsi_dif( 1.0, int, _putc, (dmfsi_context_t ctx, void* fp, int c) );
  * @param fp File handle
  * @return Current position, or negative error code
  */
-dmod_dmfsi_dif( 1.0, long, _tell, (dmfsi_context_t ctx, void* fp) );
+dmod_dmfsi_dif( 2.0, dmfsi_offset_t, _tell, (dmfsi_context_t ctx, void* fp) );
 
 /**
  * @brief Check if at end of file
