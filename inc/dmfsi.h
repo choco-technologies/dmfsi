@@ -55,11 +55,16 @@ typedef struct dmfsi_context* dmfsi_context_t;
 #define DMFSI_ERR_NOT_EMPTY   -6
 
 /**
+ * @brief File Size
+ */
+typedef uint64_t dmfsi_size_t;
+
+/**
  * @brief Directory entry structure
  */
 typedef struct {
     char name[256];
-    uint32_t size;
+    dmfsi_size_t size;
     uint32_t attr;
     uint32_t time;
 } dmfsi_dir_entry_t;
@@ -68,7 +73,7 @@ typedef struct {
  * @brief File statistics structure
  */
 typedef struct {
-    uint32_t size;
+    dmfsi_size_t size;
     uint32_t attr;
     uint32_t ctime;
     uint32_t mtime;
@@ -216,7 +221,7 @@ dmod_dmfsi_dif( 1.0, int, _fclose, (dmfsi_context_t ctx, void* fp) );
  * @param read Pointer to store the number of bytes actually read
  * @return DMFSI_OK on success, error code otherwise
  */
-dmod_dmfsi_dif( 1.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, size_t size, size_t* read) );
+dmod_dmfsi_dif( 1.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, dmfsi_size_t size, dmfsi_size_t* read) );
 
 /**
  * @brief Write to a file
@@ -227,7 +232,7 @@ dmod_dmfsi_dif( 1.0, int, _fread, (dmfsi_context_t ctx, void* fp, void* buffer, 
  * @param written Pointer to store the number of bytes actually written
  * @return DMFSI_OK on success, error code otherwise
  */
-dmod_dmfsi_dif( 1.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* buffer, size_t size, size_t* written) );
+dmod_dmfsi_dif( 1.0, int, _fwrite, (dmfsi_context_t ctx, void* fp, const void* buffer, dmfsi_size_t size, dmfsi_size_t* written) );
 
 /**
  * @brief Seek to a position in a file
