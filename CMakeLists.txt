@@ -52,7 +52,7 @@ project(dmfsi)
 dmod_setup_external_module()
 
 set(DMOD_MODULE_NAME dmfsi)
-set(DMOD_MODULE_VERSION "2.0")
+set(DMOD_MODULE_VERSION "1.0")
 set(DMOD_AUTHOR_NAME "DMOD DMFSI Team")
 set(DMOD_STACK_SIZE 1024)
 set(DMOD_PRIORITY 1)
