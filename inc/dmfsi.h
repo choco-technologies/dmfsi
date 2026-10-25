@@ -4,6 +4,7 @@
 #include "dmod.h"
 #include "dmfsi_defs.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -431,5 +432,31 @@ dmod_dmfsi_dif( 1.0, int, _direxists, (dmfsi_context_t ctx, const char* path) );
  * @param mount_path Absolute, null-terminated path at which ctx is mounted
  */
 dmod_dmfsi_dif( 1.0, void, _mounted, (dmfsi_context_t ctx, const char* mount_path) );
+
+/**
+ * @brief Notify any module that a file system was mounted or is about to be unmounted
+ *
+ * Unlike the difs above this one is not implemented by file systems: any
+ * module that has to react to mounts implements it (e.g. one loading the
+ * configuration directory a mounted card brings). The mounter (dmvfs) calls
+ * it in every enabled module implementing it - after a mount, and before an
+ * unmount while the file system is still usable - so there is nothing to
+ * register, and a module that is disabled or unloaded is simply not called.
+ * Implementing a dif creates no dependency on the mounter.
+ *
+ * Called in the thread that mounts or unmounts, without the mounter's locks
+ * held and one call at a time: an implementation may use files and mount or
+ * unmount, must not wait for another thread that does, and should hand
+ * longer work to a thread of its own. A mount may be reported twice (an
+ * unmount that failed is reported as mounted again) - treat a repeated
+ * report as a no-op. A module enabled after some mounts learns about them
+ * from the mounter (dmvfs_get_mount_point()).
+ *
+ * Implementing this dif is optional.
+ *
+ * @param mount_point Absolute, null-terminated mount point path
+ * @param mounted     true: mounted and usable; false: about to be unmounted
+ */
+dmod_dmfsi_dif( 1.0, void, _mount_changed, (const char* mount_point, bool mounted) );
 
 #endif // DMFSI_H

@@ -275,6 +275,30 @@ Create a directory.
 
 **Returns:** DMFSI_OK on success, error code otherwise
 
+## MOUNT REPORTS
+
+### dmfsi_mount_changed()
+
+```c
+void dmfsi_mount_changed(const char* mount_point, bool mounted);
+```
+
+Not implemented by file systems: any module that has to react to mounts
+implements it. The mounter (dmvfs) calls it in every enabled module
+implementing it, after a mount (`mounted == true`) and before an unmount
+(`mounted == false`, the file system still usable). Nothing to register - a
+disabled or unloaded module is not called - and no dependency on the mounter.
+Called in the mounting thread, one call at a time, without the mounter's
+locks held: hand longer work to a thread of your own. A repeated report is a
+no-op.
+
+```c
+dmod_dmfsi_dif_api_declaration( 1.0, mymodule, void, _mount_changed, (const char* mount_point, bool mounted) )
+{
+    ...
+}
+```
+
 ## IMPLEMENTATION
 
 To implement the DMFSI interface in a file system module:
