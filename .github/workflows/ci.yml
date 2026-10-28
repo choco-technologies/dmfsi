@@ -23,6 +23,7 @@ jobs:
         repository: choco-technologies/dmod
         ref: develop
         path: dmod
+        submodules: recursive
     
     - name: Install dependencies
       run: |
@@ -68,6 +69,7 @@ jobs:
         repository: choco-technologies/dmod
         ref: develop
         path: dmod
+        submodules: recursive
     
     - name: Install dependencies
       run: |
